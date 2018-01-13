@@ -40,7 +40,6 @@ class _MetaMod(binding.MetaDataBindings):
         cls._urlname = ''.join(urlname)
 
     def __call__(cls, *args, **kwargs):
-        print('entering metamod __call__', cls)
         return super().__call__(*args, **kwargs)
 
 

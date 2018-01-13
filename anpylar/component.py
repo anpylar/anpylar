@@ -326,6 +326,15 @@ class Component(_ModBase, metaclass=_MetaComponent):
     def _tagout(cls, *args, **kwargs):
         return html._tagout(cls.selector, *args, **kwargs)
 
+    def _loaded(self):
+        self.loaded()
+        if True:
+            for child in self._children:
+                child._loaded()
+
+    def loaded(self):
+        pass
+
     def _load(self, loading=True, dochildren=True):
         self.load(loading=loading)
         if dochildren:

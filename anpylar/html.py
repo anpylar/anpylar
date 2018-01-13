@@ -48,7 +48,8 @@ class _MetaElement(type):
         self = super().__call__(*args, **kwargs)  # create
         taglower = getattr(self, 'tagName', '').lower()
 
-        _el2render.append(self)
+        if taglower not in ['script', 'head', 'style']:
+            _el2render.append(self)
 
         if not hasattr(self, '_elparent'):  # flag to avoid overwriting
             self._started = False

@@ -212,7 +212,12 @@ class Router(object):
         pymodpath = getattr(__BRYTHON__, '$py_module_path')
         pathname = pymodpath.__main__
         if pathname is not None:
-            urlsplit = pathname.split('//', 1)[1]  # skip scheme
+            _psplit = pathname.split('//', 1)  # skip scheme
+            if len(_psplit) > 1:
+                urlsplit = _psplit[1]
+            else:
+                urlsplit = '/'
+
             psplit = urlsplit.split('/')[1:-1]  # skip network loc & filenamee
         else:
             psplit = []  # no href is possible

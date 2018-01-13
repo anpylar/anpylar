@@ -94,7 +94,7 @@
 
 // BRYTHON must already be in place
 var $al = function() {anpylar_load(__BRYTHON__)}
-if(document.readyState === 'interactive')
+if(document.readyState === 'interactive' || document.readyState === 'complete')
     $al()  // if async ... the DOM will probably be there
 else
     window.addEventListener('DOMContentLoaded', $al, true)

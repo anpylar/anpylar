@@ -34,6 +34,7 @@ def run(pargs=None, name=None):
     anpylar_vfs_js = os.path.join(datadir, 'anpylar.vfs.js')
     anpylar_auto_vfs_js = os.path.join(datadir, 'anpylar.auto_vfs.js')
     anpylar_d_auto_vfs_js = os.path.join(datadir, 'anpylar_d.auto_vfs.js')
+    anpylarjs_js = os.path.join(datadir, 'anpylar_js.js')
     outfile = (os.path.join(basedir, 'anpylar.js'), False)
     outfile_debug = (os.path.join(basedir, 'anpylar_debug.js'), True)
 
@@ -53,6 +54,8 @@ def run(pargs=None, name=None):
         bundler.set_br_debug(dflag)
         bundler.set_brython(br_js)
         bundler.set_brython_stdlib(brstd_js)
+        bundler.set_anpylar_js(anpylarjs_js)
+
         # choose version with lineinfo according to dflag
         if not dflag:
             bundler.set_anpylar_auto_vfs(anpylar_auto_vfs_js)

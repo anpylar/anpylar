@@ -3,6 +3,7 @@
 # Use of this source code is governed by an MIT-style license that
 # can be found in the LICENSE file at http://anpylar.com/mit-license
 ###############################################################################
+from . import config as aconfig
 from .timer import call_soon, call_delayed, call_cancel
 
 from .utils import defaultdict
@@ -83,10 +84,17 @@ class Subscription:
             self._on_completed()
 
     def on_error(self, error, sid):
-        print('on_error:', self, '::', error)
         self._error = error
         if self._on_error:
             self._on_error(error)
+        else:
+            if aconfig.observable.log_error is True:
+                print('on_error:', self, '-', error)
+            elif aconfig.observable.log_error:
+                aconfig.observable.log_error(error)
+
+            if aconfig.observable.raise_exception:
+                raise Exception(error)
 
 
 class _MetaObservable(type):
@@ -296,7 +304,9 @@ class Observable(object, metaclass=_MetaObservable):
             call_soon(lambda: self._unsubscribe(sid))
 
     def on_error(self, error, sid):
-        print('on_error:', self, '::', error)
+        if aconfig.observable.log_error_early:
+            print('on_error:', self, '-', error)
+
         self._error = error
         if sid is None:
             for sid in self._subscriptions:

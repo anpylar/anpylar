@@ -4,6 +4,9 @@
 # can be found in the LICENSE file at http://anpylar.com/mit-license
 ###############################################################################
 from . import tweaks
+
+from . import config
+
 from . import authguard
 from . import binding
 from . import component

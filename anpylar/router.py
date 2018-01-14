@@ -482,6 +482,7 @@ class Router(object):
                         comp._load(dochildren=False)
                         routlet._comp._children = [rdiv._comp]
                         routlet <= rdiv
+                        comp._loaded()
                 else:
                     # With auto-instantiation, the code from above would
                     # duplicate a component. Once due to instantiation and a

@@ -5,6 +5,7 @@
 ###############################################################################
 from browser import document, window
 
+from . import config as aconfig
 from . import html as html
 from . promise import Promise
 from . import stacks
@@ -311,8 +312,13 @@ class Router(object):
 
             comprender = stacks.comprender[:]  # copy list
             stacks.comprender.clear()  #
-            Promise.all(*comprender).then(reroute) \
-                .catch(lambda x: print('all failed:', x))
+            p = Promise.all(*comprender).then(reroute)
+            if aconfig.router.log_comprender:
+                p.catch(
+                    lambda x: print(
+                        'Router: Waiting for component rendering failed:', x
+                    )
+                )
             return
 
         if not redir:

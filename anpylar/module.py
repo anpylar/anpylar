@@ -119,7 +119,7 @@ class _MetaModule(_MetaMod):
             for comp in comps:
                 # Check if components in bootstrap have to still be rendered
                 if not document.select(comp.selector):
-                    t = html._tagout(comp.selector)  # render comp automatically
+                    t = html._tagout(comp.selector)  # render comp
                     t._comp._loaded()
 
             redir = document.query.getvalue('route')

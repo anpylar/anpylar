@@ -6,6 +6,7 @@
 from browser import document, window
 import browser.ajax
 
+from . import config as aconfig
 from . import binding
 from .component import Component
 from . import html
@@ -105,8 +106,17 @@ class _MetaModule(_MetaMod):
 
         self.__init__(*args, **kwargs)
 
-        # Auto-generate DOMNodes, which will kick-start any associated comp
         if not child:
+            # Remove any overlay present to compensate loading time
+            ov_id = aconfig.module.loading_overlay_id
+            ov_style_id = ov_id + '-style'
+            for dom_id in [ov_id, ov_style_id]:
+                try:
+                    del document[dom_id]
+                except KeyError:
+                    pass
+
+            # Auto-generate DOMNodes, which will kick-start any associated comp
             Component._visit_nodes(document.body)
 
             comps = self.components

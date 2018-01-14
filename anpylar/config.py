@@ -17,3 +17,7 @@ class observable:
 class router:
     # log if waiting for components to render failes
     log_comprender = True
+
+
+class module:
+    loading_overlay_id = 'anpylar-loading-overlay'

@@ -381,7 +381,6 @@ class Take_Operator(ObservableOperator):
     def on_next(self, val, sid):
         totake = self.to_take[sid]
         if totake:
-            print('taking:', val, 'for sid:', sid)
             self.to_take[sid] = totake - 1
             # self._delay_next(sid, lambda: self._next(val, sid))
             self._next(val, sid)
@@ -389,7 +388,6 @@ class Take_Operator(ObservableOperator):
         if totake <= 1:
             self.to_take[sid] = 0
             self.on_completed(sid)
-            print('take unsubscribing')
             self._unsubscribe(sid)
 
 

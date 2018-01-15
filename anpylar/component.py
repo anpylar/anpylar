@@ -432,7 +432,7 @@ class Component(_ModBase, metaclass=_MetaComponent):
             # This supports many more use cases like adding operators to an
             # observable to subscribe, which should be specifically sought
             # below, including having to execute calls
-            binder(eval('self.{}'.format(binding), globals()))
+            binder(eval('self.{}'.format(binding)))
             # s = self
             # for a in binding.split('.'):
             #     attr = getattr(s, a)

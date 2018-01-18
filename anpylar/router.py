@@ -15,6 +15,13 @@ from .utils import defaultdict
 __all__ = ['Route', 'Router']
 
 
+class HistoryState:
+    '''Holds a pushstate History event, in case pushstate cannot be used'''
+    def __init__(self, redir, **kwargs):
+        self.redir = redir
+        self.state = list(kwargs.items())
+
+
 class RouteSnapshot(object):
     '''
     Contains the details of a route. Used to keep the details of the active
@@ -212,6 +219,11 @@ class Router(object):
         # Find out the root of the main script. This is the href
         pymodpath = getattr(__BRYTHON__, '$py_module_path')
         pathname = pymodpath.__main__
+        self._about = pathname == 'about:blank'
+        if self._about:
+            self._history = []
+            self._histidx = -1
+
         if pathname is not None:
             _psplit = pathname.split('//', 1)  # skip scheme
             if len(_psplit) > 1:
@@ -259,7 +271,8 @@ class Router(object):
             # a dict(*evt.state) fails with $nat undefined
             kwargs.update({x: y for x, y in evt.state})
 
-        self._routing(popstate=True, params=((), kwargs))
+        redir = evt.redir if self._about else None
+        self._routing(popstate=True, redir=redir, params=((), kwargs))
 
     def _routeregister(self, pathname, cb, *args, **kwargs):
         # route = self._routecalc(pathname)
@@ -322,7 +335,11 @@ class Router(object):
             return
 
         if not redir:
-            pathname = document.location.pathname
+            if not self._about:
+                pathname = document.location.pathname
+            else:
+                pathname = '/'
+
             psplit = pathname.split('/')
             if pathname[-1] == '/':
                 psplit.pop(-1)
@@ -394,12 +411,25 @@ class Router(object):
                 # <Object object> which cannot be used anywhere, hence passing
                 # an empty string
                 if not popstate and not next_r.redirect_to:
-                    pstate = pstate  # punsplit for no query string
-                    if kwargs:
-                        lkwargs = list(kwargs.items())
-                        window.history.pushState(lkwargs, '', pstate)
+                    # pstate = pstate  # punsplit for no query string
+                    if not self._about:
+                        if kwargs:
+                            lkwargs = list(kwargs.items())
+                            window.history.pushState(lkwargs, '', pstate)
+                        else:
+                            window.history.pushState('', '', pstate)
                     else:
-                        window.history.pushState('', '', pstate)
+                        # Manual mechanism if about:blank is the url
+                        if self._history:
+                            lastpstate = self._history[-1].redir
+                        else:
+                            lastpstate = ''
+
+                        # Push to history only if it changed
+                        if lastpstate != pstate:
+                            hstate = HistoryState(pstate, **kwargs)
+                            self._history.insert(self._histidx + 1, hstate)
+                            self._histidx += 1
 
                 r = next_r  # r is now the route to be activated
                 if r.params:  # transformations may be needed
@@ -536,8 +566,25 @@ class Router(object):
 
     def back(self):
         '''Navigate once backwards'''
-        window.history.back()
+        if self._about:
+            # The first route to be processed will push the initial histidx
+            # value (-1) to 0. We cannot go beyond that route. Hence we use -1
+            # here, because if only one route is there we cannot move 0 - 1 =
+            # -1 and the check fails
+            hidx = self._histidx - 1
+            if hidx >= 0:
+                self._histidx -= 1
+                self._onpopstate(self._history[hidx])
+        else:
+            window.history.back()
 
     def forward(self):
         '''Navigate once forward'''
-        window.history.forward()
+        if self._about:
+            # We can at most move to the end of the array.
+            hidx = self._histidx + 1
+            if hidx < len(self._history):
+                self._histidx += 1
+                self._onpopstate(self._history[hidx])
+        else:
+            window.history.forward()

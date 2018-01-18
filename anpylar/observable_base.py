@@ -93,7 +93,7 @@ class Subscription:
             elif aconfig.observable.log_error:
                 aconfig.observable.log_error(error)
 
-            if aconfig.observable.raise_exception:
+            if aconfig.observable.raise_error:
                 raise Exception(error)
 
 

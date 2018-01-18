@@ -425,14 +425,19 @@ class Component(_ModBase, metaclass=_MetaComponent):
         # To bind binder with binding, but in the local context, so that self,
         # will actually be this "self" and not that belonging to the binder
         if lambdize:
+            if not binding.startswith('self.'):
+                binding = 'self.' + binding
+
             k = {'self': self}
-            exec('_l = lambda: self.{}'.format(binding), k)
+            exec('_l = lambda: ' + binding, k)
             binder(k['_l'])
         else:
             # This supports many more use cases like adding operators to an
             # observable to subscribe, which should be specifically sought
             # below, including having to execute calls
-            binder(eval('self.{}'.format(binding)))
+            if not binding.startswith('self.'):
+                binding = 'self.' + binding
+            binder(eval(binding))
             # s = self
             # for a in binding.split('.'):
             #     attr = getattr(s, a)
@@ -444,14 +449,20 @@ class Component(_ModBase, metaclass=_MetaComponent):
         # will actually be this "self" and not that belonging to the binder
         selfargs = []
         for a in args:
-            selfargs.append(eval('self.{}'.format(a)))
+            if a.startswith('self.'):
+                selfargs.append(eval(a))
+            else:
+                selfargs.append(eval('self.{}'.format(a)))
 
         # self evaluation in the dictionary comprehension fails if no prev
         # evaluation has taken part outside, like in _binder above
         # selfkw = {k: eval('self.{}'.format(v)) for k, v in kwargs.items()}
         selfkw = {}
         for k, v in kwargs.items():
-            selfkw[k] = eval('self.{}'.format(v))
+            if v.startswith('self.'):
+                selfkw[k] = eval(v)
+            else:
+                selfkw[k] = eval('self.{}'.format(v))
 
         fmtter(*selfargs, **selfkw)
 

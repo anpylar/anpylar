@@ -812,4 +812,5 @@ for x in ['txt', 'router-outlet']:
 
 
 # Override default tags with supercharged ones
+__BRYTHON__.DOMNodeDict.tagsorig = __BRYTHON__.DOMNodeDict.tags
 __BRYTHON__.DOMNodeDict.tags = tags

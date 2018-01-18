@@ -106,7 +106,10 @@ class _MetaElement(type):
                     binder = getattr(self, name[1:])
                     self._comp._binder(binder, value, lambdize=False)
                 elif n0 == '[':
-                    fmtargs.append(name[1:-1])
+                    name = name[1:-1]
+                    if not name:
+                        name = value
+                    fmtargs.append(name)
                 elif n0 == '{':
                     fmtkwargs[name[1:-1]] = value
                 elif n0 == '$':

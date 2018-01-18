@@ -505,6 +505,8 @@ class SuperchargedNode(object, metaclass=_MetaElement):
         if onoff is None:  # toggle modus
             if curdisplay is 'none':
                 nextdisplay = self._cvals.get('lastdisplay', '')
+                if nextdisplay == 'none':
+                    nextdisplay = ''
             else:
                 nextdisplay = 'none'
 

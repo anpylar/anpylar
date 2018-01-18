@@ -1,0 +1,13 @@
+1.1.3
+-----
+  - Support about:blank routes
+  - Support expressions in html programming which reference self
+  - Support []="expression" to allow array formatting with expressions with
+    whitespace
+  - Add initial optional overlay functionality
+  - Add central configuration repository
+  - Remove leftover tracing entries
+
+1.1.1
+-----
+  - Initial Release

@@ -18,9 +18,9 @@
             if(ext != '.vfs.js')
                 throw _b_.ImportError('VFS file URL must end with .vfs.js extension')
 
-            self = {__class__: sfs_hook.$dict, path: path}
-            sfs_hook.$dict.load_vfs(self, vfs)
-            return self
+            s = {__class__: sfs_hook.$dict, path: path}
+            sfs_hook.$dict.load_vfs(s, vfs)
+            return s
         }
 
         sfs_hook.__class__ = $B.$factory
@@ -30,12 +30,12 @@
             __class__: $B.$type,
             __name__: 'VFSAutoPathFinder',
 
-            load_vfs: function(self, vfs) {
-                self.vfs = vfs
-                $B.path_importer_cache[self.path + '/'] = self
+            load_vfs: function(s, vfs) {
+                s.vfs = vfs
+                $B.path_importer_cache[s.path + '/'] = s
             },
-            find_spec: function(self, fullname, module) {
-                var stored = self.vfs[fullname]
+            find_spec: function(s, fullname, module) {
+                var stored = s.vfs[fullname]
                 if (stored === undefined)
                     return _b_.None
 
@@ -46,9 +46,9 @@
                     __class__: $B.$ModuleDict,
                     loader: $B.imported['_importlib'].VFSFinder,  // finder_VFS
                     // FIXME : Better origin string.
-                    origin: self.path + '#' + fullname,
+                    origin: s.path + '#' + fullname,
                     // FIXME: Namespace packages ?
-                    submodule_search_locations: is_package ? [self.path] : _b_.None,
+                    submodule_search_locations: is_package ? [s.path] : _b_.None,
                     loader_state: {stored: stored},
                     // FIXME : Where exactly compiled module is stored ?
                     cached: _b_.None,
@@ -56,7 +56,7 @@
                     has_location: _b_.True
                 }
             },
-            invalidate_caches: function(self) {
+            invalidate_caches: function(s) {
             }
         }
 

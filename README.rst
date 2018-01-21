@@ -50,11 +50,11 @@ And yes ... now you have to read the docs.
 
 For direct on-line usage, the link is:
 
-  - ``https://cdn.rawgit.com/anpylar/anpylar/1.1.1/anpylar.js``
+  - ``https://cdn.rawgit.com/anpylar/anpylar/1.1.3/anpylar.js``
 
 And with line number information:
 
-  - ``https://cdn.rawgit.com/anpylar/anpylar/1.1.1/anpylar_debug.js``
+  - ``https://cdn.rawgit.com/anpylar/anpylar/1.1.3/anpylar_debug.js``
 
-You can choose your own version by simply replacing ``1.1.1`` with the version
+You can choose your own version by simply replacing ``1.1.3`` with the version
 of your choosing.

@@ -546,6 +546,104 @@ class SuperchargedNode(object, metaclass=_MetaElement):
         '''
         return _ClassHelper(self)
 
+    @property
+    def class_(self):
+        '''
+        Adds elements to the *class*
+
+        It can be used as in
+
+          - ``element.class_(*args)``
+
+            Each of the args will be added to the *class* attribute. Each arg
+            has to be a *string*
+
+        or
+
+          - ``element.class_.name1.name2.``
+
+            *name1* and *name2* will be added to the class.
+
+        Both syntaxes can be mixed:
+
+          - ``element.class_('name1', 'name2').name3
+
+        *Note*: Because ``-`` is not an allowed character in identifiers, ``_``
+        can be used and will be changed to ``-``. This is mostly useful for the
+        *.attribute* notation
+        '''
+        return _ClassAddHelper(self)
+
+    @property
+    def classless_(self):
+        '''
+        Removes elements from the *class*
+
+        It can be used as in
+
+          - ``element.classless_(*args)``
+
+            Each of the args will be removed from the *class* attribute. Each
+            arg has to be a *string*
+
+        or
+
+          - ``element.classless_.name1.name2.``
+
+            *name1* and *name2* will be removed from the class.
+
+        Both syntaxes can be mixed:
+
+          - ``element.classless_('name1', 'name2').name3
+
+        *Note*: Because ``-`` is not an allowed character in identifiers, ``_``
+        can be used and will be changed to ``-``. This is mostly useful for the
+        *.attribute* notation
+        '''
+        return _ClassRemoveHelper(self)
+
+
+class _ClassRemoveHelper:
+    def __init__(self, target):
+        self.target = target
+
+    def __getattr__(self, name):
+        name = name.replace('_', '-')
+        cparts = self.target.class_name.split()
+        try:
+            cparts.remove(name)
+        except ValueError:
+            pass
+        else:
+            self.target.class_name = ' '.join(cparts)
+
+        return self
+
+    def __call__(self, *args):
+        cp = self.target.class_name.split()
+        cp.extend(x in (a.replace('_', '-') for a in args) if x not in cp)
+        self.target.class_name ' '.join(cp)
+        return self.target
+
+
+class _ClassAddHelper:
+    def __init__(self, target):
+        self.target = target
+
+    def __getattr__(self, name):
+        if self.target.class_name:
+            self.target.class_name += ' '
+
+        self.target.class_name += name.replace('_', '-')
+        return self
+
+    def __call__(self, *args):
+        if self.target.class_name:
+            self.target.class_name += ' '
+
+        self.target.class_name += ' '.join(x.replace('_', '-') for x in args)
+        return self.target
+
 
 class _HelperBase:
     helper = None

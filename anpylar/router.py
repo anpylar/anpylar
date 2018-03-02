@@ -434,6 +434,8 @@ class Router(object):
                 r = next_r  # r is now the route to be activated
                 if r.params:  # transformations may be needed
                     for name, transform in r.params.items():
+                        if not transform:
+                            continue
                         if name in kwargs:
                             kwargs[name] = transform(kwargs[name])
 

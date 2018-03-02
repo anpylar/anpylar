@@ -621,8 +621,8 @@ class _ClassRemoveHelper:
 
     def __call__(self, *args):
         cp = self.target.class_name.split()
-        cp.extend(x in (a.replace('_', '-') for a in args) if x not in cp)
-        self.target.class_name ' '.join(cp)
+        cp.extend(x for x in (a.replace('_', '-') for a in args) if x not in cp)
+        self.target.class_name = ' '.join(cp)
         return self.target
 
 

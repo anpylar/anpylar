@@ -1,3 +1,8 @@
+1.1.4
+-----
+  - Http Client delivers full response regardless of code
+  - Add class_ and classless_ helpers to add/remove to class
+
 1.1.3
 -----
   - Support about:blank routes

@@ -52,13 +52,17 @@ class HttpRequest(ObservableSource):
         self.on_error(False, self._sid)
 
     def _complete_handler(self, resp, sid):
-        ret = resp if self._fullresp else resp.text
+        if self._fullresp:
+            if resp.status:
+                self.on_next(resp, sid)
+            else:
+                self.on_error(resp, sid)
 
-        if 200 <= resp.status < 300:
-            self.on_next(ret, sid)
+        elif 200 <= resp.status < 300:
+            self.on_next(resp.text, sid)
         else:
             # self.on_error(HttpException(resp), sid)
-            self.on_error(ret, sid)
+            self.on_error(resp.text, sid)
 
 
 class HttpRequestLocalData(ObservableSource):

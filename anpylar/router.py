@@ -462,7 +462,7 @@ class Router(object):
                                   params=params)
                     return
 
-                node = document  # position 0
+                node = self.module._node  # position 0
                 for route in route_path[1:len(self._ractives)]:
                     if route.idx in self._routedivs:
                         _, node = self._routedivs[route.idx]
@@ -480,7 +480,7 @@ class Router(object):
 
                 rpath = route_path[len(self._ractives):]
             else:
-                node = document.body  # position 0
+                node = self.module._node  # position 0
                 rpath = route_path
 
             isoutlet = bool(outlet)

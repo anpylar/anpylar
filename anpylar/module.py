@@ -91,9 +91,21 @@ class _MetaModule(_MetaMod):
                 isubmods = []
 
         if not child:
+            # Get the rendering node before creating the router, because the
+            # router will also use it for route-outlet
+            node = document.body.select(self.selector or self._SELECTOR)
+            if not node:  # default document.body (user may override)
+                node = self.NODE
+
+            self._node = node
+            stacks.htmlnodes.append(node)  # make it parent of new nodes
+
+            if not self.headstyle:  # can put styles outside of head
+                self._node_head = node
+
             # over class attr
             self.router = self.router_cls(self, isubmods, self.routes)
-            document.body._comp = self  # Set itself as main parent
+            node._comp = self  # Set itself as main parent
 
         _cachename = self.cachename
         if not _cachename:
@@ -101,8 +113,9 @@ class _MetaModule(_MetaMod):
                                         self.__class__.__name__)
 
         self._cachename_style = '{}.{}'.format(_cachename, 'style')
-        self._stylerer(document.head)  # need router support, not before
-        self.render(document.head)
+        if not child:
+            self._stylerer(self._node_head)  # need router support, not before
+            self.render(node)
 
         self.__init__(*args, **kwargs)
 
@@ -117,7 +130,7 @@ class _MetaModule(_MetaMod):
                     pass
 
             # Auto-generate DOMNodes, which will kick-start any associated comp
-            Component._visit_nodes(document.body)
+            Component._visit_nodes(node)
 
             comps = self.components
             try:
@@ -128,7 +141,7 @@ class _MetaModule(_MetaMod):
 
             for comp in comps:
                 # Check if components in bootstrap have to still be rendered
-                if not document.select(comp.selector):
+                if not node.select(comp.selector):
                     t = html._tagout(comp.selector)  # render comp
                     t._comp._loaded()
 
@@ -240,6 +253,16 @@ class Module(_ModBase, metaclass=_MetaModule):
 
     stylepath = None
     stylesheet = ''
+
+    _SELECTOR = 'module-outlet'
+    selector = None
+    # Force styles in the head of the document if rendering to body
+    headstyle = False
+
+    NODE = document.body  # default
+
+    _node = None
+    _node_head = document.head
 
     def render(self, node):
         pass

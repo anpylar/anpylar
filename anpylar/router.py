@@ -117,6 +117,10 @@ class Route(object):
 
             setattr(self, k, v)
 
+        if self.path and self.path[0] == '/':
+            # remove leading slash from routes
+            self.path = self.path[1:]
+
         if self.can_activate:
             self.can_activate = self.can_activate()
 

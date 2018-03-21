@@ -594,7 +594,7 @@ class SuperchargedNode(object, metaclass=_MetaElement):
 
         Both syntaxes can be mixed:
 
-          - ``element.classless_('name1', 'name2').name3
+          - ``element.classless_('name1', 'name2').name3``
 
         *Note*: Because ``-`` is not an allowed character in identifiers, ``_``
         can be used and will be changed to ``-``. This is mostly useful for the

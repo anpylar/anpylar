@@ -1,3 +1,9 @@
+1.1.5
+-----
+  - Method navigate_to for router for navigation away from app
+  - Allow leading slashes in route path declarations
+  - Add module selector (default module-outlet) to determine root rendering
+
 1.1.4
 -----
   - Http Client delivers full response regardless of code

@@ -544,6 +544,24 @@ class Router(object):
             return
 
     # End user methods
+    def navigate_to(self, pathname, **kwargs):
+        '''
+        This method navigates away from the app to the given ``pathname``
+
+          - ``pathname``
+
+            URI or Absolute or relative path.
+
+          - ``kwargs`` will be passed as query arguments the route
+        '''
+        if kwargs:
+            euc = window.encodeURIComponent
+            params = ('='.join((euc(k), euc(v))) for k, v in kwargs.items())
+            pathname += '?' + '&'.join(params)
+
+        # send the browser away
+        window.location.href = pathname
+
     def route_to(self, pathname, *args, **kwargs):
         '''
         As the name indicates, this method routes to: ``pathname``
